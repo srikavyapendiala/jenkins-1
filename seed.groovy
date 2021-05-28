@@ -9,7 +9,7 @@ pipelineJob('CI-Pipeline/frontend-CI') {
       'scm'(class:'hudson.plugin.git.GitSCM',plugin:'git') {
         'userRemoteConfigs' {
           'hudson.plugin.git.UserRemoteConfig' {
-            'url'('https://github.com/srikavya/frontend.git')
+            'url'('https://github.com/srikavyapendiala/frontend.git')
           }
         }
         'branches' {
