@@ -3,7 +3,7 @@ folder('CI-Pipelines') {
   description('CI Pipelines')
 }
 
-def component = ["cart", "catalogue","user","payment","shipping","frontend"];
+def component = ["login","users","todo","redis","frontend"];
 
 def count=(component.size()-1)
 for (i in 0..count) {
@@ -22,7 +22,7 @@ for (i in 0..count) {
         'scm'(class:'hudson.plugins.git.GitSCM',plugin:'git') {
           'userRemoteConfigs' {
             'hudson.plugins.git.UserRemoteConfig' {
-              'url'('https://github.com/zsdevops01/'+j+'.git')
+              'url'('https://github.com/srikavyapendiala/jenkins-1.git')
               'refspec'('\'+refs/tags/*\':\'refs/remotes/origin/tags/*\'')
             }
           }
