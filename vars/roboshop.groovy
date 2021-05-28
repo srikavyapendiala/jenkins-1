@@ -1,60 +1,48 @@
-
-def call(Map params = [:]) {
-  // Start Default Arguments
+def call(Map params =[1]) {
   def args = [
-          NEXUS_IP               : '172.31.14.124',
+          NEXUS_IP: '172.31.7.43'
   ]
   args << params
 
-  // End Default + Required Arguments
   pipeline {
     agent {
       label "${args.SLAVE_LABEL}"
     }
 
-    triggers {
-      pollSCM('* * * * 1-5')
-    }
-
     environment {
-      COMPONENT     = "${args.COMPONENT}"
-      NEXUS_IP      = "${args.NEXUS_IP}"
-      PROJECT_NAME  = "${args.PROJECT_NAME}"
-      SLAVE_LABEL   = "${args.SLAVE_LABEL}"
-      APP_TYPE      = "${args.APP_TYPE}"
+      COMPONENT = "${args.COMPONENT}"
+      NEXUS_IP = "${args.NEXUS_IP}"
+      PROJECT_NAME = "${args.PROJECT_NAME}"
+      SLAVE_LABEL = "${args.SLAVE_LABEL}"
     }
 
     stages {
 
-      stage('Build Code & Install Dependencies') {
+      stage('Prepare Articrafts') {
+        when {
+          environment name: 'COMPONENT', value: 'frontend'
+        }
         steps {
-          script {
-            build = new nexus()
-            build.code_build("${APP_TYPE}", "${COMPONENT}")
-          }
+          sh '''
+          echo ${COMPONENT}
+          cd static
+          zip -r ../${COMPONENT}.zip *
+        '''
         }
       }
 
-
-      stage('Prepare Artifacts') {
+      stage('Upload Articrafts') {
         steps {
-          script {
-            prepare = new nexus()
-            prepare.make_artifacts("${APP_TYPE}", "${COMPONENT}")
-          }
+          sh '''
+          curl -f -v -u admin:kavya --upload-file jenkins-1.zip http://NEXUS_IP:8081/repository/jenkins-1/jenkins-1.zip
+        '''
         }
       }
-
-      stage('Upload Artifacts') {
-        steps {
-          script {
-            prepare = new nexus()
-            prepare.nexus(COMPONENT)
-          }
-        }
-      }
-
     }
-
   }
 }
+
+
+
+
+
